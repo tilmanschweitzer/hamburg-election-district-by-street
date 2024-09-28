@@ -1,47 +1,36 @@
 <script setup lang="ts">
-import HelloWorld from './components/HelloWorld.vue'
-import TheWelcome from './components/TheWelcome.vue'
+
+import { type Ref, ref } from 'vue'
+import StreetSearch from '@/components/StreetSearch.vue'
+import ElectionDistrictByStreet from '@/components/ElectionDistrictByStreet.vue'
+import { allStreets } from '@/street-data-provider'
+
+const searchData: Ref<SearchData> = ref({
+  street: 'Akeleiweg',
+  number: ''
+})
+
+const streets = ref(allStreets);
+
 </script>
 
 <template>
   <header>
-    <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
-
     <div class="wrapper">
-      <HelloWorld msg="You did it!" />
+
     </div>
   </header>
 
   <main>
-    <TheWelcome />
+    <h1>Hamburg Wahlbezirke 2025</h1>
+    <StreetSearch v-model="searchData.street" :streets="streets" />
+
+    <div style="height: 50px"></div>
+
+    <election-district-by-street :selected-street="searchData.street"  />
   </main>
 </template>
 
 <style scoped>
-header {
-  line-height: 1.5;
-}
 
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
-}
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
-}
 </style>
