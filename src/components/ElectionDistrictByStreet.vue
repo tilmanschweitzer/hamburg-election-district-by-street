@@ -149,7 +149,7 @@ function displayElectionDistrictName(entry: Entry): string {
               </li>
             </ol>
 
-            <div style="height: 100px">
+            <div id="street-number-research">
               <div class="flex flex-col gap-y-3">
                 <label for="streetNumber">Hausnummer eingeben</label>
                 <InputText id="streetNumber" v-model="streetNumber" aria-describedby="streetNumber-help" />
@@ -190,5 +190,27 @@ function displayElectionDistrictName(entry: Entry): string {
 
 strong {
   font-weight: bold
+}
+
+#street-number-research {
+  height: 180px;
+}
+
+@media (min-width: 576px) {
+  #street-number-research {
+    height: 140px;
+  }
+}
+
+@media (min-width: 768px) {
+  #street-number-research {
+    height: 100px;
+  }
+}
+
+@media (min-width: 992px) {
+  #street-number-research {
+    height: 90px;
+  }
 }
 </style>
