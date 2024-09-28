@@ -29,7 +29,9 @@ const streets = ref(allStreets);
 
   <footer>
     <p>
-      Dies ist ein Recherchewerkzeug basierend auf einem
+      Dies ist ein Recherchewerkzeug für
+      <a href="https://voltdeutschland.org/hamburg">Volt Hamburg</a>
+      basierend auf einem
       <a href="https://www.statistik-nord.de/wahlen/wahlen-in-hamburg/buergerschaftswahlen/2025">Datensatz von Statistik Nord</a>.
     </p>
     <p>
@@ -37,15 +39,20 @@ const streets = ref(allStreets);
     </p>
     <p>
       <a href="https://voltdeutschland.org/datenschutz">Datenschutz</a> |
-      <a href="https://voltdeutschland.org/impressum">Impressum</a>
+      <a href="https://voltdeutschland.org/impressum">Impressum</a> |
+      <a href="https://volteuropa.workplace.com/chat/t/100027937265763">Support/Feedback via Workplace</a>
     </p>
   </footer>
 </template>
 
 <style scoped>
 
+  main {
+    padding-bottom: 180px;
+  }
   footer {
     position: absolute;
-    bottom: 100px
+    bottom: 60px;
+    font-size: 0.8rem;
   }
 </style>
