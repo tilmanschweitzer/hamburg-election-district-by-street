@@ -5,7 +5,7 @@ import streetsOfHamburg from '../assets/streets_of_hamburg_election_2025.json'
 import InputText from 'primevue/inputtext';
 import Card from 'primevue/card';
 
-import { computed, type Ref, ref, watch, watchEffect } from 'vue'
+import { computed, type ComputedRef, type Ref, ref, watch, watchEffect } from 'vue'
 import { ALL_NUMBERS, DEBUG, EVEN_NUMBERS_ONLY, ODD_NUMBERS_ONLY } from '@/consts'
 
 const props = defineProps<{
@@ -82,7 +82,7 @@ const emptyStreetNumber = computed(() => {
   return streetNumber.value.trim() === '';
 })
 
-const electionDistrictsByStreenAndNumber: Entry[] = computed(() => {
+const electionDistrictsByStreenAndNumber: ComputedRef<Entry[]> = computed(() => {
   if (emptyStreetNumber.value) {
     return [];
   }
