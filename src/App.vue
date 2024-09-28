@@ -26,8 +26,26 @@ const streets = ref(allStreets);
 
     <election-district-by-street :selected-street="selectedStreet"  />
   </main>
+
+  <footer>
+    <p>
+      Dies ist ein Recherchewerkzeug basierend auf einem
+      <a href="https://www.statistik-nord.de/wahlen/wahlen-in-hamburg/buergerschaftswahlen/2025">Datensatz von Statistik Nord</a>.
+    </p>
+    <p>
+      Es werden keine Nutzungsdaten erhoben.
+    </p>
+    <p>
+      <a href="https://voltdeutschland.org/datenschutz">Datenschutz</a> |
+      <a href="https://voltdeutschland.org/impressum">Impressum</a>
+    </p>
+  </footer>
 </template>
 
 <style scoped>
 
+  footer {
+    position: absolute;
+    bottom: 100px
+  }
 </style>

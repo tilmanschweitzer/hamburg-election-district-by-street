@@ -1,5 +1,9 @@
 @import './base.css';
 
+:root {
+  --p-primary-color: #502379;
+}
+
 #app {
   max-width: 1280px;
   margin: 0 auto;
@@ -7,10 +11,9 @@
   font-weight: normal;
 }
 
-a,
-.green {
+a {
   text-decoration: none;
-  color: hsla(160, 100%, 37%, 1);
+  color: #502379;
   transition: 0.4s;
   padding: 3px;
 }
