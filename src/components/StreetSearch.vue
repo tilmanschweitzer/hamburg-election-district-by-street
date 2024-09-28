@@ -26,6 +26,12 @@ function clear() {
   streetSearchInput.value = '';
 }
 
+function forceSelect() {
+  if (filteredStreets.value.length === 1) {
+    selectedStreet.value = filteredStreets.value[0];
+  }
+}
+
 function select() {
   selectedStreet.value = streetSearchInput.value;
 }
@@ -35,7 +41,13 @@ function select() {
 <template>
   <div>
     <h2>Straßenname in Hamburg eingeben</h2>
-    <AutoComplete v-model="streetSearchInput" :suggestions="filteredStreets" @complete="searchStreet" @item-select="select" @clear="clear"/>
+    <AutoComplete v-model="streetSearchInput"
+                  :suggestions="filteredStreets"
+                  @complete="searchStreet"
+                  @item-select="select"
+                  @clear="clear"
+                  @blur="forceSelect"
+    />
     <Button icon="pi pi-times" aria-label="Clear" @click="clear"/>
   </div>
 </template>

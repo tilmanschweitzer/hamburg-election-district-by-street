@@ -5,10 +5,7 @@ import StreetSearch from '@/components/StreetSearch.vue'
 import ElectionDistrictByStreet from '@/components/ElectionDistrictByStreet.vue'
 import { allStreets } from '@/street-data-provider'
 
-const searchData: Ref<SearchData> = ref({
-  street: 'Akeleiweg',
-  number: ''
-})
+const selectedStreet: Ref<string> = ref('')
 
 const streets = ref(allStreets);
 
@@ -23,11 +20,11 @@ const streets = ref(allStreets);
 
   <main>
     <h1>Hamburg Wahlbezirke 2025</h1>
-    <StreetSearch v-model="searchData.street" :streets="streets" />
+    <StreetSearch v-model="selectedStreet" :streets="streets" />
 
     <div style="height: 50px"></div>
 
-    <election-district-by-street :selected-street="searchData.street"  />
+    <election-district-by-street :selected-street="selectedStreet"  />
   </main>
 </template>
 

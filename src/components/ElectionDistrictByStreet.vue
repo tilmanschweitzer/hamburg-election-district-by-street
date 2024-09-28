@@ -2,71 +2,120 @@
 
 import streetsOfHamburg from '../assets/streets_of_hamburg_election_2025.json'
 
-import { type Ref, ref, watchEffect } from 'vue'
+import InputText from 'primevue/inputtext';
+import Card from 'primevue/card';
+
+import { computed, type Ref, ref, watch, watchEffect } from 'vue'
+import { ALL_NUMBERS, DEBUG, EVEN_NUMBERS_ONLY, ODD_NUMBERS_ONLY } from '@/consts'
 
 const props = defineProps<{
   selectedStreet: string,
 }>()
 
-const electionDistricts: Ref<string[]> = ref([]);
+const streetNumber: Ref<string> = ref("");
 
-function electionDistrictFromEntry(entry: Entry): string {
-  return entry.edn + " - " + entry.ed;
-}
+
+const electionDistrictsNames: Ref<string[]> = ref([]);
+const electionDistrictEntries: Ref<Entry[]> = ref([]);
 
 function addElectionDistrict(entry: Entry) {
-  const electionDistrict = electionDistrictFromEntry(entry);
-  if (!electionDistricts.value.includes(electionDistrict)) {
-    electionDistricts.value.push(electionDistrict)
+  electionDistrictEntries.value.push(entry);
+
+  const electionDistrict = displayElectionDistrictName(entry);
+  if (!electionDistrictsNames.value.includes(electionDistrict)) {
+    electionDistrictsNames.value.push(electionDistrict)
   }
 }
 
-function entryMatchesNumber(entry: Entry, searchData: SearchData) {
-  const number = parseInt(searchData.number);
+function entryMatchesNumber(entry: Entry, streetNumber: string) {
+  const number = parseInt(streetNumber);
 
   // All numbers
-  if (entry.ns === 3) {
+  if (entry.ns === ALL_NUMBERS) {
     return entry.min.v <= number && number <= entry.max.v;
   }
   // Even only
-  if (entry.ns === 2 && number % 2 === 0) {
+  if (entry.ns === EVEN_NUMBERS_ONLY && number % 2 === 0) {
     return entry.min.v <= number && number <= entry.max.v;
   }
   // Odd only
-  if (entry.ns === 1 && number % 2 === 1) {
+  if (entry.ns === ODD_NUMBERS_ONLY && number % 2 === 1) {
     return entry.min.v <= number && number <= entry.max.v;
   }
   return false
 }
 
-function entryMatchesSearch(entry: Entry, searchData: SearchData) {
-  if (!entry.s.startsWith(searchData.street)) {
-    return false;
-  }
-  if (searchData.number && !entryMatchesNumber(entry, searchData)) {
-    return false;
-  }
-  return true;
+function entryMatchesStreetName(entry: Entry, streetName: string) {
+  return entry.s.startsWith(streetName);
 }
 
-function updateElectionDistricts(searchData: SearchData) {
-  electionDistricts.value = [];
+function updateElectionDistricts(streetName: string) {
+  electionDistrictsNames.value = [];
+  electionDistrictEntries.value = [];
 
   (streetsOfHamburg as Entry[]).forEach(entry => {
 
-    if (entryMatchesSearch(entry, searchData)) {
+    if (entryMatchesStreetName(entry, streetName)) {
       addElectionDistrict(entry);
     }
   });
 
-  electionDistricts.value.sort();
+  electionDistrictsNames.value.sort();
+  electionDistrictEntries.value.sort((entry: Entry, otherEntry: Entry) => {
+    if (entry.edn === otherEntry.edn) {
+      return entry.min.v - otherEntry.min.v;
+    }
+    return entry.edn - otherEntry.edn;
+  })
 }
 
-updateElectionDistricts({street: props.selectedStreet})
+updateElectionDistricts(props.selectedStreet)
 
 watchEffect(() => {
-  updateElectionDistricts({street: props.selectedStreet})
+  if (props.selectedStreet.trim() === '' || electionDistrictEntries.value.length <= 1) {
+    streetNumber.value = '';
+  }
+  updateElectionDistricts(props.selectedStreet)
 })
+
+const emptyStreetNumber = computed(() => {
+  return streetNumber.value.trim() === '';
+})
+
+const electionDistrictsByStreenAndNumber: Entry[] = computed(() => {
+  if (emptyStreetNumber.value) {
+    return [];
+  }
+
+  return electionDistrictEntries.value.filter(entry => {
+    return entryMatchesNumber(entry, streetNumber.value);
+  })
+
+})
+
+function displayNumberScheme(entry: Entry) {
+  if (entry.ns === ALL_NUMBERS) {
+    return ''
+  }
+  if (entry.ns === EVEN_NUMBERS_ONLY) {
+    return 'geraden'
+  }
+  if (entry.ns === ODD_NUMBERS_ONLY) {
+    return 'ungeraden'
+  }
+  throw new Error("Unknown number schema")
+}
+
+function displayNumber(number: StreetNumber) {
+  if (number.s) {
+    return `${number.v}${number.s}`
+  }
+  return `${number.v}`
+}
+
+function displayElectionDistrictName(entry: Entry): string {
+  return `${entry.ed} (Wahlbezirk ${entry.edn})`
+}
 
 </script>
 
@@ -76,21 +125,62 @@ watchEffect(() => {
       <h2>Keine Straße ausgewählt</h2>
     </div>
     <div v-else>
-      <h2>Ausgewählte Straße: {{ selectedStreet }}</h2>
+<!--      <h2>Ausgewählte Straße: {{ selectedStreet }}</h2>-->
 
-      <div v-if="electionDistricts.length === 0">
+      <div v-if="electionDistrictsNames.length === 0">
         <h2>Achtung: Kein Ergebnis</h2>
       </div>
-      <div v-if="electionDistricts.length > 1">
-        Achtung: Kein <u>eindeutiges</u> Ergebnis
-        <div>
-          <ul>
-            <li v-for="electionDistrict in electionDistricts">{{ electionDistrict }}</li>
-          </ul>
-        </div>
+      <div v-else-if="electionDistrictsNames.length === 1">
+        <h2>Wahlbezirk: {{ electionDistrictsNames[0] }}</h2>
+
+        Für die Straße <strong>{{ selectedStreet }}</strong> gibt es genau einen Wahlbezirk.
       </div>
-      <div v-if="electionDistricts.length === 1">
-        <h2>{{ electionDistricts[0] }}</h2>
+      <div v-else>
+
+        <Card>
+          <template #title>Achtung: Kein <u>eindeutiges</u> Ergebnis!</template>
+          <template #content>
+            <p class="m-0">
+              Für die Straße {{ selectedStreet}} gibt es {{ electionDistrictsNames.length }} Wahlbezirke:
+            </p>
+            <ol>
+              <li v-for="electionDistrictName in electionDistrictsNames">
+                {{ electionDistrictName }}
+              </li>
+            </ol>
+
+            <div style="height: 100px">
+              <div class="flex flex-col gap-y-3">
+                <label for="streetNumber">Hausnummer eingeben</label>
+                <InputText id="streetNumber" v-model="streetNumber" aria-describedby="streetNumber-help" />
+                <small id="streetNumber-help">Das Ergebnis weiter einschränken.</small>
+              </div>
+
+              <div v-if="!emptyStreetNumber">
+                <div v-if="electionDistrictsByStreenAndNumber.length === 0">
+                  <u>Kein Ergebnis</u> für die Hausnummer {{ streetNumber }}.
+                </div>
+                <div v-else-if="electionDistrictsByStreenAndNumber.length === 1">
+                  Die Hausnummer {{ streetNumber }} gehört zum Wahlbezirk <strong>{{ displayElectionDistrictName(electionDistrictsByStreenAndNumber[0]) }}</strong>.
+                </div>
+                <div v-else>
+                  Fehler: Mehrere Ergebnisse für die Hausnummer {{ streetNumber}}.
+                </div>
+              </div>
+            </div>
+
+            <h3>Zuordnung der Hausnummern</h3>
+            <p class="m-0" v-for="electionDistrictEntry in electionDistrictEntries" style="padding-bottom: 10px;">
+              <strong>{{ displayElectionDistrictName(electionDistrictEntry) }}</strong>:
+              Alle <u>{{ displayNumberScheme(electionDistrictEntry) }}</u> Hausnummern
+              von <strong>{{ displayNumber(electionDistrictEntry.min) }}</strong>
+              bis <strong>{{ displayNumber(electionDistrictEntry.max) }}</strong>
+              gehören dazu.
+
+              <code v-if="DEBUG"><pre>{{ electionDistrictEntry }}</pre></code>
+            </p>
+          </template>
+        </Card>
       </div>
     </div>
   </div>
@@ -98,4 +188,7 @@ watchEffect(() => {
 
 <style scoped>
 
+strong {
+  font-weight: bold
+}
 </style>
