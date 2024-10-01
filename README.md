@@ -1,6 +1,55 @@
-# hamburg-adress-recherche
+# hamburg-election-district-by-street
 
-This template should help get you started developing with Vue 3 in Vite.
+> This project helps to research election districts for the Hamburg election 2025.
+
+## Setup GCP storage bucket
+
+* Create bucket
+  * Location type: Region
+  * Location: europe-west3 (Frankfurt)
+  * Storage class: Standard
+  * No public access prevention
+  * No Soft delete policy
+* Grant access for "allUsers" with role "Storage Object Viewer"
+* Bucket overview > 3 dot menu > Edit website configuration - Set index.html
+
+https://cloud.google.com/sdk/docs/install?hl=de
+
+## Tooling setup
+
+```js
+gcloud init
+```
+
+
+https://cloud.google.com/sdk/docs/initializing?hl=de
+
+
+### Deploy
+
+```
+./deploy.sh
+
+```
+
+## Edge cases
+
+### District without list
+
+Rahlstedt (Election district 14) - Example street: Travemünder Stieg
+
+### Tree district streets
+
+* Eidelstedter Weg
+* Landwehr
+* Rahlstedter Weg
+
+### Impossible cases
+
+* Landwehr 6 and 8
+
+
+# Tech notes
 
 ## Recommended IDE Setup
 
