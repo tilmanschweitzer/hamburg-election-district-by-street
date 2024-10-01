@@ -15,7 +15,7 @@ const filter = ref('');
 const streetSearchInput = ref(selectedStreet.value);
 
 const filteredStreets = computed(() => {
-  return props.streets.filter(street => street.startsWith(filter.value))
+  return props.streets.filter(street => street.toLowerCase().startsWith(filter.value.toLowerCase()))
 })
 
 function searchStreet(event: any) {
