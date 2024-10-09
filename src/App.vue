@@ -19,7 +19,7 @@ const streets = ref(allStreets);
   </header>
 
   <main>
-    <h1>Hamburg Wahlbezirke 2025</h1>
+    <h1>Hamburg Wahlkreise 2025</h1>
     <StreetSearch v-model="selectedStreet" :streets="streets" />
 
     <div style="height: 50px"></div>

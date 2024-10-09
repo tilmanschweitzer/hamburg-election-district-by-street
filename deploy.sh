@@ -8,7 +8,7 @@
 bucket_name="hamburg-election-district-by-street.tilmanschweitzer.de"
 bucket_domain="${bucket_name}"
 
-sed -i '' 's/Vite App/Hamburg Wahlbezirke 2025/g' dist/index.html
+sed -i '' 's/Vite App/Hamburg Wahlkreise 2025/g' dist/index.html
 
 gcloud storage cp dist/*.*  "gs://${bucket_name}/"
 

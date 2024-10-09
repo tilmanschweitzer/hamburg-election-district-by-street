@@ -141,7 +141,7 @@ function displayElectionDistrictName(entry: Entry): string {
           <template #title>Achtung: Kein <u>eindeutiges</u> Ergebnis!</template>
           <template #content>
             <p class="m-0">
-              Für die Straße {{ selectedStreet}} gibt es {{ electionDistrictsNames.length }} Wahlbezirke:
+              Für die Straße {{ selectedStreet}} gibt es {{ electionDistrictsNames.length }} Wahlkreise:
             </p>
             <ol>
               <li v-for="electionDistrictName in electionDistrictsNames">
