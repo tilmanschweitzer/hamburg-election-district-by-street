@@ -12,7 +12,7 @@ sed -i '' 's/Vite App/Hamburg Wahlkreise 2025/g' dist/index.html
 
 gcloud storage cp dist/*.*  "gs://${bucket_name}/"
 
-gcloud storage rm "gs://${bucket_name}/assets/*"
+# gcloud storage rm "gs://${bucket_name}/assets/*"
 
 gcloud storage cp --gzip-local-all dist/assets/*.*  "gs://${bucket_name}/assets"
 
