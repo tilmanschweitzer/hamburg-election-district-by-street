@@ -12,19 +12,16 @@ const streets = ref(allStreets);
 </script>
 
 <template>
-  <header>
-    <div class="wrapper">
-
-    </div>
-  </header>
-
   <main>
     <h1>Hamburg Wahlkreise 2025</h1>
     <StreetSearch v-model="selectedStreet" :streets="streets" />
 
     <div style="height: 50px"></div>
 
-    <election-district-by-street :selected-street="selectedStreet"  />
+    <election-district-by-street :selected-street="selectedStreet"
+                                 :excluded-election-districts="['Rahlstedt (Wahlbezirk 14)']"
+                                 :excluded-election-districts-evaluation-threshold="3"
+    />
   </main>
 
   <footer>

@@ -10,6 +10,8 @@ import { ALL_NUMBERS, DEBUG, EVEN_NUMBERS_ONLY, ODD_NUMBERS_ONLY } from '@/const
 
 const props = defineProps<{
   selectedStreet: string,
+  excludedElectionDistricts: string[],
+  excludedElectionDistrictsEvaluationThreshold: number
 }>()
 
 const streetNumber: Ref<string> = ref("");
@@ -117,6 +119,20 @@ function displayElectionDistrictName(entry: Entry): string {
   return `${entry.ed} (Wahlbezirk ${entry.edn})`
 }
 
+function showExcludedElectionDistrictWarning(): boolean {
+  if (electionDistrictsNames.value.length > props.excludedElectionDistrictsEvaluationThreshold) {
+    return true
+  }
+
+  return props.excludedElectionDistricts.some(excludedElectionDistrict => {
+    return electionDistrictsNames.value.includes(excludedElectionDistrict);
+  })
+}
+
+function getExcludedElectionDistrict() {
+  return electionDistrictsNames.value.find(electionDistrictName => props.excludedElectionDistricts.includes(electionDistrictName));
+}
+
 </script>
 
 <template>
@@ -125,8 +141,19 @@ function displayElectionDistrictName(entry: Entry): string {
       <h2>Keine Straße ausgewählt</h2>
     </div>
     <div v-else>
-<!--      <h2>Ausgewählte Straße: {{ selectedStreet }}</h2>-->
-
+      <div v-if="showExcludedElectionDistrictWarning()">
+        <Card style="margin-bottom: 20px">
+          <template #title>
+            <i class="pi pi-exclamation-triangle"></i>
+            Achtung: Keine Wahlkreisliste in {{ getExcludedElectionDistrict() }}
+          </template>
+          <template #content>
+            <p class="m-0">
+              Für diesen Bezirk haben wir keine Wahlkreisliste, aber du kannst uns trotzdem mit einer <strong>Unterschrift für die Landesliste</strong> helfen.
+            </p>
+          </template>
+        </Card>
+      </div>
       <div v-if="electionDistrictsNames.length === 0">
         <h2>Achtung: Kein Ergebnis</h2>
       </div>
