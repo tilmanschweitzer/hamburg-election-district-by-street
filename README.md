@@ -25,11 +25,10 @@ gcloud init
 https://cloud.google.com/sdk/docs/initializing?hl=de
 
 
-### Deploy
+### Build and Deploy
 
 ```
-./deploy.sh
-
+npm run build &&  ./deploy.sh
 ```
 
 ## Edge cases
